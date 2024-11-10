@@ -28,6 +28,9 @@ class Maze():
 		self._cells = []
 		self._create_cells()
 		self._break_entrance_and_exit()
+		self._break_walls_r(0, 0)
+		self._reset_cells_visited()
+
 
 	def _create_cells(self):
 		for x in range(self.num_cols):
@@ -67,41 +70,40 @@ class Maze():
 
 		while True:
 			to_visit = []
-			if i - 1 > 0:
-				if not self._cells[i - 1][j].visited:
+
+			if i - 1 > 0 and not self._cells[i - 1][j].visited:
 					to_visit.append((i - 1, j))
-			if j - 1 > 0:
-				if not self._cells[i][j - 1].visited:
+			if j - 1 > 0 and not self._cells[i][j - 1].visited:
 					to_visit.append((i, j - 1))
-			if i + 1 < self.num_cols:
-				if not self._cells[i + 1][j].visited:
+			if i + 1 < self.num_cols and not self._cells[i + 1][j].visited:
 					to_visit.append((i + 1, j))
-			if j + 1 < self.num_rows:
-				if not self._cells[i][j + 1].visited:
+			if j + 1 < self.num_rows and not self._cells[i][j + 1].visited:
 					to_visit.append((i, j + 1))
 
 			if len(to_visit) == 0:
 				self._draw_cell(i, j)
 				return
+			
+			d = to_visit[random.randrange(len(to_visit))]
+			if d[0] < i:
+				self._cells[i][j].has_left = False
+				self._cells[d[0]][d[1]].has_right = False
+			if d[0] > i:
+				self._cells[i][j].has_right = False
+				self._cells[d[0]][d[1]].has_left = False
+			if d[1] < j:
+				self._cells[i][j].has_top = False
+				self._cells[d[0]][d[1]].has_bottom = False
+			if d[1] > j:
+				self._cells[i][j].has_bottom = False
+				self._cells[d[0]][d[1]].has_top = False
 
-			else:
-				d = to_visit[random.randrange(len(to_visit))]
-				if d[0] < i:
-					self._cells[i][j].has_left = False
-					self._cells[d[0]][d[1]].has_right = False
-				elif d[0] > i:
-					self._cells[i][j].has_right = False
-					self._cells[d[0]][d[1]].has_left = False
-				elif d[1] < j:
-					self._cells[i][j].has_top = False
-					self._cells[d[0]][d[1]].has_bottom = False
-				elif d[1] > j:
-					self._cells[i][j].has_bottom = False
-					self._cells[d[0]][d[1]].has_top = False
+			self._break_walls_r(d[0], d[1])
 
-				self._break_walls_r(d[0], d[1])
-
-
+	def _reset_cells_visited(self):
+		for y in range(len(self._cells)):
+			for x in range(len(self._cells[y])):
+				self._cells[y][x].visited = False
 
 
 
