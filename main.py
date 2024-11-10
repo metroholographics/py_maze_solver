@@ -13,10 +13,10 @@ def main():
 	cell_size_y = (height - 2 * margin) / num_rows
 
 	win = Window(width, height)
-	maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, win=win, seed=0)
+	maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, win=win)
+	maze.solve()
 	
 	win.wait_for_close()
-
 
 
 if __name__ == "__main__":
